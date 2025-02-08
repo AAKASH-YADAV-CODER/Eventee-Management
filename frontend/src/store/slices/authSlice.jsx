@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,
-  isAuthenticated: false,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  isAuthenticated: !!localStorage.getItem("user"),
+  // Remove token from initial state since we're using HTTP-only cookies
+  // token: localStorage.getItem("token") || null,
 };
 
 const authSlice = createSlice({
@@ -12,19 +14,25 @@ const authSlice = createSlice({
     login: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = true;
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("user");
+      // Remove token-related operations since using HTTP-only cookies
     },
+    // Remove setAuth action since we're not managing tokens in frontend
     guestLogin: (state) => {
-      state.user = {
+      const guestUser = {
         id: "guest",
         email: "guest@example.com",
         name: "Guest User",
         isGuest: true,
       };
+      state.user = guestUser;
       state.isAuthenticated = true;
+      localStorage.setItem("user", JSON.stringify(guestUser));
     },
   },
 });

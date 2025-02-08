@@ -1,24 +1,40 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, guestLogin } from "../../store/slices/authSlice";
+import { guestLogin, login } from "../../store/slices/authSlice";
 import { LogIn, UserPlus } from "lucide-react";
-
+import { toast } from "react-toastify";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // In a real app, you would validate and make an API call here
-    dispatch(
-      login({
-        id: "1",
-        email,
-        name: email.split("@")[0],
-        isGuest: false,
-      })
-    );
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:1000/api/v1/user/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      dispatch(login(response.data.data.user));
+      toast.success(response.data.message);
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+      console.log(error.message);
+    }
   };
 
   return (
@@ -60,6 +76,14 @@ const LoginForm = () => {
             Sign In
           </button>
         </form>
+        <div className="mt-4">
+          <Link
+            to="/signup"
+            className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Don't have an account? Sign up
+          </Link>
+        </div>
         <div className="mt-4">
           <button
             onClick={() => dispatch(guestLogin())}

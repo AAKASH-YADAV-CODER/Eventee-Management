@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { LogIn } from "lucide-react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -9,15 +13,28 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+    try {
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Passwords do not match!");
+        return;
+      }
+
+      const response = await axios.post(
+        "http://localhost:1000/api/v1/user/signup",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success(response.data.message);
+      navigate("/login");
+      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Registration failed");
+      console.log(error.message);
     }
-    axios.post("/api/signup", formData);
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", password: "", confirmPassword: "" });
   };
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -111,6 +128,14 @@ const RegisterForm = () => {
             Sign Up
           </button>
         </form>
+        <div className="mt-4">
+          <Link
+            to="/login"
+            className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Already have an account? Login
+          </Link>
+        </div>
       </div>
     </div>
   );

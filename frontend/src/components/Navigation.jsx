@@ -3,15 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { Calendar, PlusCircle, LogOut } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:1000/api/v1/user/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      dispatch(logout());
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Logout failed");
+      console.error("Logout failed:", error);
+    }
   };
 
   if (!isAuthenticated) return null;

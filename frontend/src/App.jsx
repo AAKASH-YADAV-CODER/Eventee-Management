@@ -7,12 +7,34 @@ import {
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import { useSelector } from "react-redux";
 import LoginForm from "./components/auth/LoginForm";
 import EventDashboard from "./components/events/EventDashboard";
 import EventForm from "./components/events/EventForm";
 import Navigation from "./components/Navigation";
-import PrivateRoute from "./components/PrivateRoute";
 import RegisterForm from "./components/auth/RegisterForm";
+
+// New AuthWrapper component
+const AuthWrapper = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+// New PublicRoute component
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
@@ -21,22 +43,36 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Navigation />
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signup" element={<RegisterForm />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <LoginForm />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <RegisterForm />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={
-                <PrivateRoute>
+                <AuthWrapper>
                   <EventDashboard />
-                </PrivateRoute>
+                </AuthWrapper>
               }
             />
             <Route
               path="/create-event"
               element={
-                <PrivateRoute>
+                <AuthWrapper>
                   <EventForm />
-                </PrivateRoute>
+                </AuthWrapper>
               }
             />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
