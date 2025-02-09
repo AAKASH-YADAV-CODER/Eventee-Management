@@ -6,7 +6,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true, // This is important for cookies
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -18,7 +18,8 @@ app.use(cookieParser());
 
 //import Routes
 import userRouter from "./routes/user.route.js";
+import eventRouter from "./routes/event.route.js";
 //Route Declaration
 app.use("/api/v1/user", userRouter);
-
+app.use("/api/v1/events", eventRouter);
 export { app };

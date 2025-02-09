@@ -16,11 +16,11 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
-    logout: (state) => {
+    logout: (state, action) => {
       state.user = null;
       state.isAuthenticated = false;
       localStorage.removeItem("user");
-      // Remove token-related operations since using HTTP-only cookies
+      return state;
     },
     // Remove setAuth action since we're not managing tokens in frontend
     guestLogin: (state) => {

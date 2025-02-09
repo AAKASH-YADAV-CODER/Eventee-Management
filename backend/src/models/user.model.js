@@ -25,7 +25,6 @@ const userSchema = new Schema(
     },
     confirmPassword: {
       type: String,
-      required: [true, "Password is required"],
     },
     refreshToken: {
       type: String,

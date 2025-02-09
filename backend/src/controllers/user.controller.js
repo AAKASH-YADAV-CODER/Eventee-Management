@@ -44,7 +44,6 @@ const UserAuthentication = {
       name,
       email,
       password,
-      confirmPassword,
     });
 
     // Generate tokens

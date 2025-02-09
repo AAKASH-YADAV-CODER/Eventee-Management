@@ -13,13 +13,19 @@ import EventDashboard from "./components/events/EventDashboard";
 import EventForm from "./components/events/EventForm";
 import Navigation from "./components/Navigation";
 import RegisterForm from "./components/auth/RegisterForm";
+import EventDetail from "./components/events/EventDetail";
 
 // New AuthWrapper component
-const AuthWrapper = ({ children }) => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+const AuthWrapper = ({ children, allowGuest = true }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Prevent guest users from accessing non-allowed routes
+  if (!allowGuest && user?.isGuest) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;
@@ -40,7 +46,7 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-100">
           <Navigation />
           <Routes>
             <Route
@@ -62,7 +68,7 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <AuthWrapper>
+                <AuthWrapper allowGuest={true}>
                   <EventDashboard />
                 </AuthWrapper>
               }
@@ -70,7 +76,23 @@ function App() {
             <Route
               path="/create-event"
               element={
-                <AuthWrapper>
+                <AuthWrapper allowGuest={false}>
+                  <EventForm />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path="/event/:id"
+              element={
+                <AuthWrapper allowGuest={true}>
+                  <EventDetail />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path="/event/edit/:id"
+              element={
+                <AuthWrapper allowGuest={false}>
                   <EventForm />
                 </AuthWrapper>
               }
