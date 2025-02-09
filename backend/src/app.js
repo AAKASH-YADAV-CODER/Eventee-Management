@@ -5,10 +5,14 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(
   cors({
-    origin: "https://eventee-manag-aakash.netlify.app",
+    origin: [
+      "https://eventee-manag-aakash.netlify.app",
+      "http://localhost:5173",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
   })
 );
 app.use(express.json({ limit: "50mb" }));
