@@ -10,7 +10,7 @@ const AuthCheck = ({ children }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/api/v1/user/check-auth",
+          "https://eventee-management.onrender.com/api/v1/user/check-auth",
           {
             withCredentials: true,
           }

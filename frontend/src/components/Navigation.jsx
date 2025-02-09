@@ -33,8 +33,7 @@ const Navigation = () => {
     try {
       // Regular user logout with API call
       await axios.post(
-        "http://localhost:1000/api/v1/user/logout",
-        {},
+        "https://eventee-management.onrender.com/api/v1/user/logout",
         {
           withCredentials: true,
         }
@@ -45,7 +44,6 @@ const Navigation = () => {
       navigate("/login");
     } catch (error) {
       dispatch(logout());
-      toast.error("Logout failed");
       console.error("Logout failed:", error);
     }
   };

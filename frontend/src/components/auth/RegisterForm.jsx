@@ -22,7 +22,7 @@ const RegisterForm = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:1000/api/v1/user/signup",
+        "https://eventee-management.onrender.com/api/v1/user/signup",
         formData,
         {
           withCredentials: true,

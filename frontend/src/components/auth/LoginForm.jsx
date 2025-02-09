@@ -18,7 +18,7 @@ const LoginForm = () => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/v1/user/login",
+        "https://eventee-management.onrender.com/api/v1/user/login",
         {
           email,
           password,

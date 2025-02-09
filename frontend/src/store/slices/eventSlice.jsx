@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:1000/api/v1/events/"; // Adjust based on your backend URL
+const API_URL = "https://eventee-management.onrender.com/api/v1/events/";
 
 // Configure axios to include credentials
 axios.defaults.withCredentials = true;
